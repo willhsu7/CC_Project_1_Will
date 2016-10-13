@@ -3,99 +3,122 @@ var c = -600;
 var speed = 10;
 var gravity = 0.1;
 var donuts = [];
-var candy = [];
+
 
 function setup() {
-  createCanvas(700, 600);
-  background(60, 61, 163);
-  for (var i = 0; i < 50; i++) {
-    donuts[i] = new Donuts();
-  }
-  for (var i = 0; i < 20; i++) {
-    candy[i] = new Candy();
-  }
+  createCanvas(800, 700);
+  background(0, 21, 79);
+  for (var i = 0; i < 70; i++) {
+    donuts[i] = new donut();
+  } //set up how many little shining circles in the background 
 }
 
 function draw() {
-  background(60, 61, 163);
+  background(0, 21, 79);
+  if (mouseIsPressed) {
+    background(30, 130, 255);
+  }
+
+  for (var i = 0; i < donuts.length; i++) {
+    donuts[i].display();
+    donuts[i].move();
+  } //shining circles in the background random
+
 
   for (var x = 100; x <= height; x += 200) {
-    OrangeCircle(x, b, 100);
-  } // three orange circles
+    circleone(x, b, 100);
+  } // circles one dropping 
 
   b = b + speed;
   speed = speed + gravity;
 
-  /*if (b > height) {
-    speed = speed * -0.95;
-    b = height; // let the orange circles fall and bounce with gravity 
-  }*/
-
-  for (var i = 0; i < donuts.length; i++) {
-    donuts[i].display();
-  }
-
-  for (var i = 0; i < candy.length; i++) {
-    candy[i].display();
-  }
-
   for (var m = 150; m <= height; m += 150) {
-    CircleTwo(m, c, 80);
+    circletwo(m, c, 80); // second round for circles dropping 
   }
 
-  /*if (c > height) {
-    speed = -3;
-  }*/
   if (c < 0) {
     speed = 2
   }
   c = c + speed;
-  //bouncing circle two 
+
+  rotate(frameCount / 80.0); // the star movement 
+  push();
+  translate(width * 0.8, height * 0.5);
+  scale(0.5);
+  star(0, 0, 30, 70, 5);
+  //scale(0.7);
+  //star(120, 130, 30, 70, 5);
+  //star(240, 230, 30, 70, 5);
+  pop();
+
+
 
 }
 
-function OrangeCircle(x, y, d) {
+
+function circleone(x, y, d) {
 
   noFill();
   strokeWeight(2);
-  stroke(245, 166, 35);
-  //stroke(random(245), 0, random(245));
+  stroke(85, 142, 212);
   for (var d; d > 0; d -= 10) {
     ellipse(x, y, d, d);
   }
 }
 
-function CircleTwo(m, n, d) {
+function circletwo(m, n, d) {
 
   noFill();
   strokeWeight(3);
-  stroke(255, 120, 37);
+  stroke(22, 113, 224);
   for (var d; d > 0; d -= 10) {
     ellipse(m, n, d, d);
   }
 }
 
-function Donuts() {
+function donut() {
   this.x = random(0, width);
   this.y = random(0, height);
 
   this.display = function() {
-    stroke(255, 197, 139);
+    stroke(255);
     strokeWeight(5);
-    fill(0, random(255), random(255));
+    fill(0, 0, random(255));
     ellipse(this.x, this.y, 30, 30)
+  }
+
+  this.move = function() {
+
+    this.x = this.x + speed;
+    this.y = this.y + speed;
+
+    if (this.x > width, this.y > height) {
+      this.x += random(-5, 5);
+      this.y += random(-5, 5);
+
+
+    }
+
   }
 
 }
 
-function Candy() {
-  this.x = random(0, width);
-  this.y = random(0, height);
+function star(x, y, radius1, radius2, npoints) {
+  var angle = TWO_PI / npoints;
+  var halfAngle = angle / 2.0;
 
-  this.display = function() {
-    fill(random(255), 0, random(255));
-    noStroke;
-    rect(this.x, this.y, 24, 36);
+  beginShape();
+  fill(255, 84, 13);
+  stroke(255, 190, 0);
+  strokeWeight(10);
+  for (var a = 0; a < TWO_PI; a += angle) {
+    var sx = x + cos(a) * radius2;
+    var sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a + halfAngle) * radius1;
+    sy = y + sin(a + halfAngle) * radius1;
+    vertex(sx, sy);
+
   }
-
+  endShape(CLOSE);
 }
