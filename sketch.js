@@ -3,6 +3,7 @@ var c = -600;
 var speed = 10;
 var gravity = 0.1;
 var donuts = [];
+var tileCount = 10;
 
 function setup() {
   createCanvas(800, 700);
@@ -23,6 +24,24 @@ function draw() {
     star(mouseX, mouseY, 30, 70, 5);
   }
 
+  translate(width / tileCount / 2, height / tileCount / 2);
+  strokeWeight(mouseY / 50);
+  stroke(209, 218, 240);
+  fill(131, 137, 150);
+
+  for (var gridY = 0; gridY < tileCount; gridY++) {
+    for (var gridX = 0; gridX < tileCount; gridX++) {
+
+      var posX = width / tileCount * gridX;
+      var posY = height / tileCount * gridY;
+
+      var shiftX = random(-mouseX, mouseX) / 20;
+      var shiftY = random(-mouseY, mouseY) / 20;
+
+      rect(posX + shiftX, posY + shiftY, mouseX / 15, mouseY / 15);
+    }
+  }
+
   for (var i = 0; i < donuts.length; i++) {
     donuts[i].display();
     donuts[i].move();
@@ -30,10 +49,14 @@ function draw() {
 
   for (var x = 100; x <= height; x += 200) {
     circleone(x, b, 100);
-  } // circles one dropping 
+  } // circle one dropping 
 
   b = b + speed;
   speed = speed + gravity;
+
+  if (b > height) {
+    b = -300;
+  } // let circle one come again
 
   for (var m = 150; m <= height; m += 150) {
     circletwo(m, c, 80); // second round for circles dropping 
@@ -44,15 +67,9 @@ function draw() {
   }
   c = c + speed;
 
-  /*rotate(frameCount / 80.0); // the star movement 
-  push();
-  translate(width * 0.8, height * 0.5);
-  scale(0.5);
-  star(0, 0, 30, 70, 5);
-  scale(0.7);
-  star(120, 130, 30, 70, 5);
-  star(240, 230, 30, 70, 5);
-  pop();*/
+  if (c > height) {
+    c = -900;
+  }
 
 }
 
@@ -60,8 +77,8 @@ function circleone(x, y, d) {
   noFill();
   strokeWeight(2);
   stroke(85, 142, 212);
-  if (mouseIsPressed){
-    stroke(random(255),0,0);
+  if (mouseIsPressed) {
+    stroke(random(255), 0, 0);
   }
   for (var d; d > 0; d -= 10) {
     ellipse(x, y, d, d);
@@ -74,8 +91,8 @@ function circletwo(m, n, d) {
   noFill();
   strokeWeight(3);
   stroke(22, 113, 224);
-  if (mouseIsPressed){
-    stroke(random(255),0,0);
+  if (mouseIsPressed) {
+    stroke(random(255), 0, 0);
   }
   for (var d; d > 0; d -= 10) {
     ellipse(m, n, d, d);
@@ -120,8 +137,8 @@ function star(x, y, radius1, radius2, npoints) {
 
   beginShape();
   fill(255, 84, 13);
-  if (mouseIsPressed){
-    fill(random(255),0,0);
+  if (mouseIsPressed) {
+    fill(random(255), 0, 0);
   }
   stroke(255, 190, 0);
   strokeWeight(10);
