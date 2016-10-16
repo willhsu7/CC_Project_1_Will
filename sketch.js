@@ -5,26 +5,47 @@ var speed = 10;
 var gravity = 0.1;
 var donuts = [];
 var tileCount = 10;
+var points = [];
 
 function setup() {
   createCanvas(800, 700);
   background(0, 21, 79);
 
-  for (var i = 0; i < 70; i++) {
+  for (var i = 0; i < 120; i++) {
     donuts[i] = new donut();
   } //set up how many little shining circles in the background 
 }
 
 function draw() {
   background(0, 21, 79);
-  star(mouseX, mouseY, 30, 70, 5); //moving star with mouse 
-
+  //moving star with mouse 
+  var point = {
+    x: mouseX,
+    y: mouseY
+  }
+  points.push(point);
+  if (points.length > 30) {
+    points.splice(0, 1);
+  }
+  for (var i = 0; i < points.length; i++) {
+    star(points[i].x, points[i].y, 30, 70, 5);
+  }
   if (mouseIsPressed) {
     background(0, 0, 0); //change background color by pressing the mouse 
     speed = 0; //everything stops moving by pressing the mouse
-    star(mouseX, mouseY, 30, 70, 5);
+    var point = {
+      x: mouseX,
+      y: mouseY
+    }
+    points.push(point);
+    if (points.length > 50) {
+      points.splice(0, 1);
+    }
+    for (var i = 0; i < points.length; i++) {
+      star(points[i].x, points[i].y, 30, 70, 5);
+    }
   }
-
+  //set up the grid movement 
   translate(width / tileCount / 2, height / tileCount / 2);
   strokeWeight(mouseY / 50);
   stroke(209, 218, 240);
@@ -36,8 +57,8 @@ function draw() {
       var posX = width / tileCount * gridX;
       var posY = height / tileCount * gridY;
 
-      var shiftX = random(-mouseX, mouseX) / 20;
-      var shiftY = random(-mouseY, mouseY) / 20;
+      var shiftX = random(-mouseX, mouseX);
+      var shiftY = random(-mouseY, mouseY);
 
       ellipse(posX + shiftX, posY + shiftY, mouseX / 20, mouseY / 20);
     }
@@ -87,7 +108,6 @@ function circleone(x, y, d) {
 }
 
 function circletwo(m, n, d) {
-
   noFill();
   strokeWeight(3);
   stroke(22, 113, 224);
