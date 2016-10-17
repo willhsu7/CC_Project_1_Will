@@ -1,16 +1,10 @@
-//Creative Coding Project_1_adjective: Project_Anxious
-var b = 0;
-var c = -600;
-var speed = 10;
-var gravity = 0.1;
-var donuts = [];
 var tileCount = 10;
-var points = [];
+var donuts = [];
+var speed = 10;
 
 function setup() {
   createCanvas(800, 700);
   background(0, 21, 79);
-
   for (var i = 0; i < 120; i++) {
     donuts[i] = new donut();
   } //set up how many little shining circles in the background 
@@ -18,37 +12,29 @@ function setup() {
 
 function draw() {
   background(0, 21, 79);
-  //moving star with mouse 
-  var point = {
-    x: mouseX,
-    y: mouseY
-  }
-  points.push(point);
-  if (points.length > 30) {
-    points.splice(0, 1);
-  }
-  for (var i = 0; i < points.length; i++) {
-    star(points[i].x, points[i].y, 30, 70, 5);
-  }
-  if (mouseIsPressed) {
-    background(0, 0, 0); //change background color by pressing the mouse 
-    speed = 0; //everything stops moving by pressing the mouse
-    var point = {
-      x: mouseX,
-      y: mouseY
-    }
-    points.push(point);
-    if (points.length > 50) {
-      points.splice(0, 1);
-    }
-    for (var i = 0; i < points.length; i++) {
-      star(points[i].x, points[i].y, 30, 70, 5);
-    }
-  }
-  //set up the grid movement 
+
+  // drawing spinning star
+  push();
+  translate(width * 0.5, height * 0.5);
+  rotate(frameCount / -100.0); //let the star spins
+  star(0, 0, 30, 70, 5);
+  pop();
+
+  push();
+  translate(width * 0.5, height * 0.5);
+  rotate(frameCount / -20.0);
+  star(0, 0, 30, 70, 5);
+  pop();
+
+  push();
+  translate(width * 0.5, height * 0.5);
+  rotate(frameCount / 20.0);
+  star(0, 0, 30, 70, 7);
+  pop();
+
+  //set up the grid movement in the background  
   translate(width / tileCount / 2, height / tileCount / 2);
-  strokeWeight(mouseY / 50);
-  stroke(209, 218, 240);
+  noStroke();
   fill(209, 218, 240);
 
   for (var gridY = 0; gridY < tileCount; gridY++) {
@@ -56,11 +42,10 @@ function draw() {
 
       var posX = width / tileCount * gridX;
       var posY = height / tileCount * gridY;
+      var shiftX = random(-mouseX, mouseX) / 70;
+      var shiftY = random(-mouseY, mouseY) / 10;
 
-      var shiftX = random(-mouseX, mouseX);
-      var shiftY = random(-mouseY, mouseY);
-
-      ellipse(posX + shiftX, posY + shiftY, mouseX / 20, mouseY / 20);
+      ellipse(posX + shiftX, posY + shiftY, mouseX / 30, mouseY / 30);
     }
   } //the grid movement at the background
 
@@ -69,54 +54,32 @@ function draw() {
     donuts[i].move();
   } //little shining circles in the background random
 
-  for (var x = 100; x <= height; x += 200) {
-    circleone(x, b, 100);
-  } // circle one dropping 
-
-  b = b + speed;
-  speed = speed + gravity;
-
-  if (b > height) {
-    b = -300;
-  } // let circle one come again
-
-  for (var m = 150; m <= height; m += 150) {
-    circletwo(m, c, 80); // second round for circles dropping 
-  }
-  if (c < 0) {
-    speed = 2
-  }
-  c = c + speed;
-  if (c > height) {
-    c = -900;
-  }
 }
 
 //custom functions sections 
-//functions: circle one, circle two, little shing circle(dount), star
+//star, dount
 
-function circleone(x, y, d) {
-  noFill();
-  strokeWeight(2);
-  stroke(85, 142, 212);
-  if (mouseIsPressed) {
-    stroke(random(255), 0, 0);
-  }
-  for (var d; d > 0; d -= 10) {
-    ellipse(x, y, d, d);
-  }
-}
+function star(x, y, radius1, radius2, npoints) {
+  var angle = TWO_PI / npoints;
+  var halfAngle = angle / 2.0;
+  beginShape();
+  fill(255, 190, 0);
+  noStroke();
 
-function circletwo(m, n, d) {
-  noFill();
-  strokeWeight(3);
-  stroke(22, 113, 224);
-  if (mouseIsPressed) {
-    stroke(random(255), 0, 0);
+  for (var a = 0; a < TWO_PI; a += angle) {
+    var sx = x + cos(a) * radius2;
+    var sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a + halfAngle) * radius1;
+    sy = y + sin(a + halfAngle) * radius1;
+    vertex(sx, sy);
   }
-  for (var d; d > 0; d -= 10) {
-    ellipse(m, n, d, d);
+  if (mouseIsPressed) { // if mouse is pressed, the star changes color and size
+    fill(0, random(255), random(255));
+    scale(1.5);
   }
+
+  endShape(CLOSE);
 }
 
 function donut() {
@@ -126,43 +89,23 @@ function donut() {
   this.display = function() {
     noStroke();
     fill(0, random(255), random(255));
-    ellipse(this.x, this.y, 30, 30)
+    ellipse(this.x, this.y, 15, 15);
 
-    if (mouseIsPressed) { //if mouse is pressed, the little circle gets bigger 
+    if (mouseIsPressed) { //if mouse is pressed, the little circles change color
       noStroke();
-      fill(random(255), 0, random(255));
-      ellipse(this.x, this.y, 55, 55)
+      fill(255, 117, random(255));
+      ellipse(this.x, this.y, 15, 15);
     }
   }
+  
   this.move = function() {
     this.x = this.x + speed;
     this.y = this.y + speed;
 
-    if (this.x > width && this.y > height) {
+    if (this.x > width && this.y > height) { //let it appear after falling down
       this.x = random(0, width);
       this.y = random(0, height);
       speed = 3;
     }
   }
-}
-
-function star(x, y, radius1, radius2, npoints) { //the star function 
-  var angle = TWO_PI / npoints;
-  var halfAngle = angle / 2.0;
-  beginShape();
-  fill(255, 84, 13);
-  if (mouseIsPressed) { //if mouse is pressed, star starts shining  
-    fill(random(255), 0, 0);
-  }
-  stroke(255, 190, 0);
-  strokeWeight(4);
-  for (var a = 0; a < TWO_PI; a += angle) {
-    var sx = x + cos(a) * radius2;
-    var sy = y + sin(a) * radius2;
-    vertex(sx, sy);
-    sx = x + cos(a + halfAngle) * radius1;
-    sy = y + sin(a + halfAngle) * radius1;
-    vertex(sx, sy);
-  }
-  endShape(CLOSE);
 }
