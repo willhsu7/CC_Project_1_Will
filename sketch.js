@@ -12,6 +12,20 @@ function setup() {
 
 function draw() {
   background(0, 21, 79);
+  // set the moving space background 
+  push();
+  translate(width * 0.5, height * 0.5);
+  if (mouseIsPressed) { //when moused pressed, change the rotation direction
+    rotate(frameCount / -35.0);
+  } else {
+    rotate(frameCount / 70.0);
+  }
+  noFill();
+  stroke(255);
+  for (var d = 850; d > 0; d -= 50) {
+    ellipse(0, 0, d * 1.5, d);
+  }
+  pop();
 
   // drawing spinning star
   push();
@@ -53,11 +67,10 @@ function draw() {
     donuts[i].display();
     donuts[i].move();
   } //little shining circles in the background random
-
 }
 
 //custom functions sections 
-//star, dount
+//star, dount, circleone 
 
 function star(x, y, radius1, radius2, npoints) {
   var angle = TWO_PI / npoints;
@@ -78,7 +91,6 @@ function star(x, y, radius1, radius2, npoints) {
     fill(0, random(255), random(255));
     scale(1.5);
   }
-
   endShape(CLOSE);
 }
 
@@ -97,12 +109,21 @@ function donut() {
       ellipse(this.x, this.y, 15, 15);
     }
   }
-  
+
   this.move = function() {
     this.x = this.x + speed;
     this.y = this.y + speed;
 
+    if (mouseIsPressed) {
+      this.x = this.x - speed * 2;
+      this.y = this.y;
+    }
     if (this.x > width && this.y > height) { //let it appear after falling down
+      this.x = random(0, width);
+      this.y = random(0, height);
+      speed = 3;
+    }
+    if (this.x < width && this.y > height) { //let it appear after falling down
       this.x = random(0, width);
       this.y = random(0, height);
       speed = 3;
