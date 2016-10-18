@@ -1,6 +1,11 @@
 var tileCount = 10;
 var donuts = [];
 var speed = 10;
+var song;
+
+function preload(){ // call the song 
+   song = loadSound("God Is an Astronaut - All Is Violent, All Is Bright.mp3");
+}
 
 function setup() {
   createCanvas(800, 700);
@@ -8,6 +13,14 @@ function setup() {
   for (var i = 0; i < 120; i++) {
     donuts[i] = new donut();
   } //set up how many little shining circles in the background 
+  
+  song.setVolume(0.7);
+  song.play();//play the song
+  song.jump(60);//start from 1:00
+}
+
+function loaded() {
+  song.play();
 }
 
 function draw() {
@@ -115,7 +128,7 @@ function donut() {
     this.y = this.y + speed;
 
     if (mouseIsPressed) {
-      this.x = this.x - speed * 2;
+      this.x = this.x - speed * 2; //change the direction 
       this.y = this.y;
     }
     if (this.x > width && this.y > height) { //let it appear after falling down
